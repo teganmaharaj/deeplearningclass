@@ -1,0 +1,38 @@
+Hokay, here goes! This is the discussion we had in class:
+
+1. [weight penalization / norms]
+
+"Penalizing each weight separately" does not mean parameterizing the weights separately. The 2 norm naturally just pushes each weight down independently of others:
+
+$latex \lambda||w||^2 = \lambda\sum_{i=1} w_i $
+
+Notice this equation only has the summation in terms of $latex w_i $; there is no dependence between $latex w_i $ and $latex w_j $. 
+
+Compare this to a situation like the L1,2 norm:
+
+$latex \lambda||w||^{1,2} = \lambda\sum_{i} \sqrt{\sum_{j} w_{ij}^2} $
+
+This introduces group behaviour - as soon as one value is "off", the cost for all others to be "on" goes up.
+
+
+2. [constrained optimization]
+
+2a) Yes, the algorithm you describe for checking if an update violates a constraint is correct. 
+
+2b) You would scale by the norm and multiply by the bound. I don't believe that this is learned, so yes it would add a hyperparameter as far as I can see.
+
+2c) We're doing stochastic gradient descent, so there isn't an obvious way to do this with a lagrange multiplier (LM). When you do gradient descent with LM, you're trying to minimize over a cost while simultaneously maximizing over LM parameters. This is trickier than just minimizing over the cost and then projecting on the constraint to check it. To support/expand on this, I found this stackoverflow response helpful: "The problem is that when using Lagrange multipliers, the critical points don't occur at local minima of the Lagrangian - they occur at saddle points instead. Since the gradient descent algorithm is designed to find local minima, it fails to converge when you give it a problem with constraints" http://tinyurl.com/gsoqhjj
+
+
+3. [noise as a regularizer]
+
+3a) An MLP with binary stochastic units trains slower for three reasons (that we discussed):
+
+3a i) You're adding stochasticity to the direction of the update
+
+3a ii) You're quantizing things to 0,1, so you're lising information, and therefore have reduced capacity
+
+3a iii) The true gradient of binary stochastic units w.r.t. activations is 0. We have a gradient; it's not zero, and therefore we are not using the true gradient. But it still works somehow. 
+
+(latex is a bit clumsy and long to put in 
+
