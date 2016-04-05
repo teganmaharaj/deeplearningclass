@@ -148,47 +148,47 @@ print 'shift from example_i->example_i+1: ' +str(example_shift)+' samples'
 print 'input-target overlap: '+str(input_target_overlap)+' samples'
 print 'minibatch size: ' +str(minibatch_size)+' examples'
 dataset_name = datafile.split('.')[0]+'_' + str(atom_length)+'_'+str(example_length)+'_'+str(example_shift)+'_'+str(input_target_overlap)+'_'+str(minibatch_size)
-#full_dataset = []
-#for what_dataset,dataset in enumerate(train_test_val):
- #   if what_dataset == 0:
-  #      wha = 'train'
-  #  elif what_dataset == 1:
-   #     wha = 'test'
-   # elif what_dataset == 2:
-   #     wha = 'val'
-   # else
-   #     print 'well something went wrong'
-   #     break;
-   # print 'slicing '+ wha
-   # inputs = []
-   # targets = []
-   # current_input = []
-   # current_target = []
-   # required_length = offset + target_length
-   # processed_so_far = required_length
-   # input_start = 0
+full_dataset = []
+for what_dataset,dataset in enumerate(train_test_val):
+    if what_dataset == 0:
+        wha = 'train'
+    elif what_dataset == 1:
+        wha = 'test'
+    elif what_dataset == 2:
+        wha = 'val'
+    else
+        print 'well something went wrong'
+        break;
+    print 'slicing '+ wha
+    inputs = []
+    targets = []
+    current_input = []
+    current_target = []
+    required_length = offset + target_length
+    processed_so_far = required_length
+    input_start = 0
 
-   # while target_end <= len(dataset):
+    while target_end <= len(dataset):
 
         #input_start shifted by example_shift at the end of the loop
-    #    input_end = input_start + example_length
-     #   target_start = input_end - input_target_overlap
-     #   target_end = target_start + example_length
+        input_end = input_start + example_length
+        target_start = input_end - input_target_overlap
+        target_end = target_start + example_length
 
-      #  inputs.append( np.asarray(dataset[input_start : input_end] )
-      #  targets.append( np.asarray(dataset[target_start : target_end] )
+        inputs.append( np.asarray(dataset[input_start : input_end] )
+        targets.append( np.asarray(dataset[target_start : target_end] )
 
 
-  #  full_dataset.append(examples)
-  #  print 'examples generated'
+    full_dataset.append(examples)
+    print 'examples generated'
 
     
-  #  print '(note: '+ len(dataset) - current_length +' frames disregareded at end due to defined input target lengths)'
-  #  input_start += example_shift
+    print '(note: '+ len(dataset) - current_length +' frames disregareded at end due to defined input target lengths)'
+    input_start += example_shift
     
-#with open(dataset_name+'.pkl', "wb") as f:
-#    pickle.dump(full_dataset, f, pickle.HIGHEST_PROTOCOL )
-#    print 'pickle dumped to '+dataset_name+'.pkl'
+with open(dataset_name+'.pkl', "wb") as f:
+    pickle.dump(full_dataset, f, pickle.HIGHEST_PROTOCOL )
+    print 'pickle dumped to '+dataset_name+'.pkl'
 
 
 
