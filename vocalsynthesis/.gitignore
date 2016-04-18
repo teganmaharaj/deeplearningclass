@@ -1,2 +1,4 @@
 *.pkl
 *.wav
+*.hdf5
+*.h5py
