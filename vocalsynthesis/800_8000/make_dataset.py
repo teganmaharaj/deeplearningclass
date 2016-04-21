@@ -21,42 +21,38 @@ example_length = frame_length*seq_length
 
 # Normalize?
 if normalize == True:
-    print '\nNormalizing -1 to 1...\n'
+    print '\nNormalizing...\n'
     data_mean = numpy.mean(data)
     data_min = numpy.min(data)
     data_max = numpy.max(data)
     data = rescale(data-data_mean, -1, 1, data_min, data_max)
-    print 'subtracted training mean and normalized data to [-1,1]'
-else if normalize == 'stdev':
-    data_stdev = numpy.stdev(data)
-    data = data/stdev
-    print 'divided by standard deviation'
+    print "subtracted training mean and normalized data to [-1,1]"
 else:
-    print 'using unnormalized data'
-
+    print "using unnormalized data"
 
 # Make sure data will be the right length for reshaping
-print '\nGetting examples...\n'
-shift = 0
-while data[shift:] >= example_length + frame_length
-    num_ex_this_pass = len(data[shift:]) // example_length
-    data_to_use = data[shift:(num_ex_this_pass*example_length)]
-    num_examples += num_ex_this_pass
-    shift += example_shift
-data_to_use += data[shift:frame_length]
+num_examples = len(data) // example_length
+leftover = len(data) % example_length
+if leftover < frame_length:
+    data_to_use = data[:((num_examples-1)*example_length)+frame_length]
+else:
+    data_to_use = data[:(num_examples*example_length)+frame_length]
 
 # Reshape
-print '\nReshaping...\n'
+#chars = data.reshape(len(data)/frame_length, frame_length) #list(set(data))
+#vocab_size = len(chars)
 input_array = data_to_use[:-frame_length].reshape(num_examples,seq_length,frame_length) 
 target_array = data_to_use[frame_length:].reshape(num_examples,seq_length,frame_length)
 print input_array.shape
 print target_array.shape
 
 # Make H5PY file
-print '\nMaking Fuel-formatted HDF5 file...'
 f = h5py.File(hdf5_file, mode='w')
+print "making file..."
 inputs = f.create_dataset('inputs', input_array.shape, dtype='float64')
 targets = f.create_dataset('targets', target_array.shape, dtype='float64')
+#targets.attrs['inputs'] = yaml.dump(char_to_ix)
+#targets.attrs['targets'] = yaml.dump(ix_to_char)
 inputs[...] = input_array
 targets[...] = target_array
 inputs.dims[0].label = 'batch'
@@ -64,8 +60,8 @@ inputs.dims[1].label = 'sequence'
 targets.dims[0].label = 'batch'
 targets.dims[1].label = 'sequence'
 
-print 'doing train:test split (at '+str(train_samples)+')'
 num_train_examples = train_samples // example_length
+
 split_dict = {
     'train': {'inputs': (0, num_train_examples), 'targets': (0, num_train_examples)},
     'dev': {'inputs': (num_train_examples, num_examples), 'targets': (num_train_examples, num_examples)}}

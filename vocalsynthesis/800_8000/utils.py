@@ -53,9 +53,9 @@ def get_stream(hdf5_file, which_set, batch_size=None):
 def get_seed(file_name, seed_index):
     infile = h5py.File(file_name, 'r')
     input_array = infile['inputs'][:]
-    return input_array[seed_index]
+    return input_array[seed_index][0]
 
-def make_wav(output_filename, generated_seq, sample_rate=16000, data_min=-8936, data_max=9124, norm_min=-1.0, norm_max=1.0):
-    generated_seq = rescale(generated_seq, data_min, data_max, norm_min, norm_max)
+def make_wav(output_filename, generated_seq, sample_rate=16000, min_value=-8936, max_value=9124):
+    generated_seq = rescale(generated_seq, min_value, max_value, -1.0,1.0)
     generated_seq = generated_seq.astype('int16')
     wave.write(output_filename, sample_rate, generated_seq)

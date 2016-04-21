@@ -29,7 +29,7 @@ dev_stream = get_stream(hdf5_file, 'dev', batch_size)
 x = tensor.tensor3('inputs', dtype='float64')
 y = tensor.tensor3('targets', dtype='float64')
 import h5py
-ff = h5py.File('song.hdf5', 'r')
+ff = h5py.File(hdf5_file, 'r')
 x.tag.test_value = ff['inputs'][:3]
 y.tag.test_value = ff['targets'][:3]
 y_hat, cost, cells = nn_fprop(x, y, frame_length, hidden_size, num_layers, model)
@@ -90,3 +90,20 @@ print 'number of parameters in the model: ' + str(tensor.sum([p.size for p in cg
 main_loop = MainLoop(data_stream=train_stream, algorithm=algorithm,
                      model=Model(cost), extensions=extensions)
 main_loop.run()
+
+# Generate
+print "generating audio..."
+seed = get_seed(hdf5_file, [400])
+seed_influence_length = frame_length * 3
+sec = 16000
+samples_to_generate = sec*secs_to_generate
+num_frames_to_generate = samples_to_generate/frame_length + seed_influence_length
+generated_seq = []
+prev_input = seed
+for x in range(0, num_frames_to_generate):
+    prediction = predict_fn(prev_input)
+    generated_seq.append(prediction) #NEED TO OVERLAP/AVG?
+    prev_input = prediction
+actually_generated = numpy.asarray(generated_seq).flatten()[seed_influence_length:]
+filename = str(frame_length)+str(seq_length)+'.wav'
+make_wav(filename, actually_generated)

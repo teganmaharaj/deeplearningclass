@@ -9,8 +9,7 @@ config['frame_length'] = 800 # number of samples per step (i.e. per 'char')
 config['seq_length'] = 8000  # number of chars in the sequence
 config['example_shift'] = config['frame_length'] # number of samples to shift by for overlapping examples
 config['train_samples'] = 160000000 # train-test split point (from leaderboard)
-config['file_string'] = '{0}_{1}_{2}'.format(config['frame_length'], config['seq_length'], config['example_shift'])
-config['hdf5_file'] = config['file_string']+'.hdf5'  # hdf5 file to save to (Fuel format)
+config['hdf5_file'] = '800_8000.hdf5'  # hdf5 file to save to (Fuel format)
 
 # mostly for model.py
 config['model'] = 'gru'  # 'rnn', 'gru' or 'lstm'
@@ -25,12 +24,12 @@ config['learning_rate_decay'] = 0.97 # set to 0 to not decay learning rate
 config['decay_rate'] = 0.95  # decay rate for rmsprop
 config['step_clipping'] = 1.0  # clip norm of gradients at this value
 config['dropout'] = 0
-config['plot_name'] = config['file_string'] +'_'+ config['model']
-config['save_path'] = config['plot_name']'_best.pkl' # path to best model file
-config['load_path'] = config['plot_name']'_saved.pkl' # start from a saved model file
-config['last_path'] = config['plot_name']'_last.pkl' # path to save the model of the last iteration
+config['plot_name'] = 'gru_800_8000'
+config['save_path'] = '{0}_best.pkl'.format(config['model'])  # path to best model file
+config['load_path'] = '{0}_saved.pkl'.format(config['model'])  # start from a saved model file
+config['last_path'] = '{0}_last.pkl'.format(config['model'])  # path to save the model of the last iteration
 
 # mostly for generate.py
 config['seed_filename'] = config['hdf5_file']
-config['output_filename'] = config['plot_name']+'.wav'
+config['output_filename'] = '800_8000.wav'
 config['secs_to_generate'] = 30
