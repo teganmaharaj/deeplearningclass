@@ -1,8 +1,18 @@
 Current workflow:
-run make_dataset.py
-run train.py
 
-the hyperparams are pretty much all defined in the config.py
-the model is in model.py
+------
+1. Start bokeh server for plots
+   (remember to set server address in config)
+------
+bokeh-server --ip 0.0.0.0
 
-it should probably be a separate file, but for now generation of audio is just done at the end of train.py
+------
+2. Make a directory in /experiments and copy necessary files
+3. Set parameters and hyperparameters in config.py
+4. Run the following:
+------
+
+make_dataset.py
+train.py
+generate.py
+

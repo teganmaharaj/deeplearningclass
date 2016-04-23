@@ -1,7 +1,7 @@
 config = {}
 
 # mostly for make_dataset.py
-config['song_file'] = '../song.wav'  # raw input file
+config['song_file'] = '../../song.wav'  # raw input file
 config['normalize'] = True
 config['normalized_min'] = -1
 config['normalized_max'] = 1
@@ -32,5 +32,5 @@ config['last_path'] = config['plot_name'] + '_last.pkl' # path to save the model
 
 # mostly for generate.py
 config['seed_filename'] = config['hdf5_file']
-config['output_filename'] = config['plot_name'] + '.wav'
+config['output_filename'] = config['plot_name']+'.wav'
 config['secs_to_generate'] = 30

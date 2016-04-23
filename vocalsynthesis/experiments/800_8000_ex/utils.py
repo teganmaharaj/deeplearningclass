@@ -11,19 +11,22 @@ from blocks import main_loop
 from fuel.utils import do_not_pickle_attributes
 import scipy.io.wavfile as wave
 
-def rescale(unscaled_x, min_allowed, max_allowed, data_min, data_max):
-    return (max_allowed-min_allowed)*(unscaled_x-data_min)/(data_max-data_min) + min_allowed
-
-
-# Define this class to skip serialization of extensions
-
+#Define this class to skip serialization of extensions
 @do_not_pickle_attributes('extensions')
 class MainLoop(main_loop.MainLoop):
+
     def __init__(self, **kwargs):
         super(MainLoop, self).__init__(**kwargs)
 
     def load(self):
         self.extensions = []
+
+def rescale(unscaled_x, min_allowed, max_allowed, data_min, data_max):
+    # mostly stolen from http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
+    return (max_allowed-min_allowed)*(unscaled_x-data_min)/(data_max-data_min) + min_allowed
+
+def transpose_stream(data):
+    return (data[0].T, data[1].T)
 
 
 def track_best(channel, save_path):
@@ -34,8 +37,6 @@ def track_best(channel, save_path):
                              predicate=predicates.OnLogRecord('{0}_best_so_far'.format(channel)))
     return [tracker, checkpoint]
 
-def transpose_stream(data):
-    return (data[0].T, data[1].T)
 
 def get_stream(hdf5_file, which_set, batch_size=None):
     dataset = H5PYDataset(
@@ -44,7 +45,9 @@ def get_stream(hdf5_file, which_set, batch_size=None):
         batch_size = dataset.num_examples
     stream = DataStream(dataset=dataset, iteration_scheme=ShuffledScheme(
         examples=dataset.num_examples, batch_size=batch_size))
-    return stream
+    # Required because Recurrent bricks receive as input [sequence, batch,
+    # features]
+    return stream #Mapping(stream, transpose_stream)
 
 
 def get_seed(file_name, seed_index):
