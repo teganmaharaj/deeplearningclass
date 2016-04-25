@@ -28,23 +28,27 @@ if normalize == True:
     data = rescale(data-data_mean, -1, 1, data_min, data_max)
     print 'subtracted training mean and normalized data to [-1,1]'
 elif normalize == 'stdev':
-    data_stdev = numpy.stdev(data)
-    data = data/stdev
+    data_stdev = numpy.std(data)
+    data = data/data_stdev
     print 'divided by standard deviation'
 else:
     print 'using unnormalized data'
 
 # Make sure data will be the right length for reshaping
 print '\nGetting examples...'
-shift = 0
 num_examples = 0
 data_to_use = []
-while len(data[shift:]) >= example_length + frame_length:
-    num_ex_this_pass = len(data[shift:]) // example_length
-    data_to_use.extend( data[shift:shift+(num_ex_this_pass*example_length)] )
-    num_examples += num_ex_this_pass
-    shift += example_shift
-data_to_use.extend( data[shift:shift+frame_length] )
+if example_shift == False:
+    num_examples = len(data)-frame_length // example_length
+    data_to_use = data[:num_examples*example_length + frame_length]
+else:
+    shift = 0
+    while len(data[shift:]) >= example_length + frame_length:
+        num_ex_this_pass = len(data[shift:]) // example_length
+        data_to_use.extend( data[shift:shift+(num_ex_this_pass*example_length)] )
+        num_examples += num_ex_this_pass
+        shift += example_shift
+    data_to_use.extend( data[shift:shift+frame_length] )
 
 # Reshape
 print '\nReshaping...'

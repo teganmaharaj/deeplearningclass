@@ -1,7 +1,7 @@
 config = {}
 
 # mostly for make_dataset.py
-config['song_file'] = '../song.wav'  # raw input file
+config['song_file'] = '../../song.wav'  # raw input file
 config['normalize'] = True
 config['normalized_min'] = -1
 config['normalized_max'] = 1

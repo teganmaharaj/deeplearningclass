@@ -15,10 +15,9 @@ from blocks.serialization import load
 
 from blocks_extras.extensions.plot import Plot
 
-from utils import get_stream, track_best, MainLoop, get_seed, make_wav
+from utils import get_stream, track_best, MainLoop, get_seed, make_wav, rescale
 from model import nn_fprop
 from config import config
-
 # Load config parameters
 locals().update(config)
 
@@ -26,9 +25,9 @@ locals().update(config)
 x = tensor.tensor3('inputs', dtype='float64')
 y = tensor.tensor3('targets', dtype='float64')
 
-model = ''
-with open (hdf5_file, 'r') as pickled_model:
-    model = load(pickled_model)
+model = 'bs'
+with open (save_path, 'r') as picklefile:
+    model = load(picklefile)
 y_hat, cost, cells = nn_fprop(x, y, frame_length, hidden_size, num_layers, model)
 predict_fn = theano.function([x], y_hat)
 
@@ -40,11 +39,14 @@ samples_to_generate = sec*secs_to_generate
 num_frames_to_generate = samples_to_generate/frame_length + seq_length #don't include seed
 predictions = []
 prev_input = seed
-#x.tag.test_value = prev_input
 for i in range(num_frames_to_generate):
     prediction = predict_fn(prev_input)
     predictions.append(prediction)
-    prev_input = prediction
-actually_generated = numpy.asarray(predictions[seq_length:]) #cut off seed
+    pred_min = numpy.min(predictions)
+    pred_max = numpy.max(predictions)
+    prev_input = rescale(prediction, pred_max, pred_min) 
+actually_generated = numpy.asarray(predictions)[seq_length:,:,:,:] #cut off seed
 last_frames = actually_generated[:,:,-1,:]
 make_wav(output_filename, actually_generated.flatten())
+print str(secs_to_generate)+'seconds of audio generated'
+print output_filename

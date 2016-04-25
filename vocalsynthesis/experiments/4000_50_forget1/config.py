@@ -21,7 +21,7 @@ config['dropout'] = 0
 
 config['seed_filename'] = '../4000_50/4000_50.hdf5'
 config['seed_index'] = 400
-config['output_filename'] = '4000-50-f1.wav'
+config['output_filename'] = '4000-50-f1-4.wav'
 config['secs_to_generate'] = 30
 
 config['hdf5_file'] = '../4000_50/4000_50.hdf5'  # hdf5 file with Fuel format

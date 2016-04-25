@@ -19,12 +19,12 @@ config['decay_rate'] = 0.95  # decay rate for rmsprop
 config['step_clipping'] = 1.0  # clip norm of gradients at this value
 config['dropout'] = 0
 
-config['seed_filename'] = 'song.wav'
+config['hdf5_file'] = '../1000_100/1000_100.hdf5'  # hdf5 file with Fuel format
+config['seed_filename'] = config['hdf5_file']
 config['seed_index'] = 400
-config['output_filename'] = '1000_100-f1.wav'
+config['output_filename'] = '1000_100-f1-3.wav'
 config['secs_to_generate'] = 30
 
-config['hdf5_file'] = '../1000_100/1000_100.hdf5'  # hdf5 file with Fuel format
 config['save_path'] = '{0}_best.pkl'.format(config['model'])  # path to best model file
 config['load_path'] = '{0}_saved.pkl'.format(config['model'])  # start from a saved model file
 config['last_path'] = '{0}_last.pkl'.format(config['model'])  # path to save the model of the last iteration

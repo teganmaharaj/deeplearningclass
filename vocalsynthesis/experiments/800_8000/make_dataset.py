@@ -25,7 +25,7 @@ if normalize == True:
     data_mean = numpy.mean(data)
     data_min = numpy.min(data)
     data_max = numpy.max(data)
-    data = rescale(data-data_mean, -1, 1, data_min, data_max)
+    data = rescale(data-data_mean, -1, 1)
     print "subtracted training mean and normalized data to [-1,1]"
 else:
     print "using unnormalized data"

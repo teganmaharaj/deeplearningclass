@@ -15,7 +15,7 @@ from blocks.serialization import load
 
 from blocks_extras.extensions.plot import Plot
 
-from utils import get_stream, track_best, MainLoop, get_seed, make_wav
+from utils2 import get_stream, track_best, MainLoop, get_seed, make_wav, rescale
 from model import nn_fprop
 from config import config
 # Load config parameters
@@ -33,18 +33,20 @@ predict_fn = theano.function([x], y_hat)
 
 # Generate
 print "generating audio..."
-seed = get_seed(hdf5_file, [seed_index])
-print seed.shape
+seed = get_seed(hdf5_file, [400])
 sec = 16000
-samples_to_generate = sec*secs_to_generate
+samples_to_generate = sec*30
 num_frames_to_generate = samples_to_generate/frame_length + seq_length #don't include seed
 predictions = []
 prev_input = seed
-#x.tag.test_value = prev_input
 for i in range(num_frames_to_generate):
     prediction = predict_fn(prev_input)
     predictions.append(prediction)
-    prev_input = prediction
-actually_generated = numpy.asarray(predictions[seq_length:]) #cut off seed
+    pred_min = numpy.min(predictions)
+    pred_max = numpy.max(predictions)
+    prev_input = rescale(prediction, pred_max, pred_min) 
+actually_generated = numpy.asarray(predictions)[seq_length:,:,:,:] #cut off seed
 last_frames = actually_generated[:,:,-1,:]
-make_wav(output_filename, last_frames.flatten())
+make_wav(output_filename, actually_generated.flatten())
+print str(secs_to_generate)+'seconds of audio generated'
+print output_filename

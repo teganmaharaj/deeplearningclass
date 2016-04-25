@@ -19,7 +19,8 @@ config['decay_rate'] = 0.95  # decay rate for rmsprop
 config['step_clipping'] = 1.0  # clip norm of gradients at this value
 config['dropout'] = 0
 
-config['seed_filename'] = '../song.wav'
+config['seed_index'] = 400
+config['seed_filename'] = '4000_50.hdf5'
 config['output_filename'] = '4000_50.wav'
 config['secs_to_generate'] = 30
 
